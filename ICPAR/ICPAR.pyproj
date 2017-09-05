@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c5ca3590-1bd7-4dfd-a477-d8f7661f4d03</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ICPAR_.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,7 +26,6 @@
     <Compile Include="batch.py" />
     <Compile Include="GenImg.py" />
     <Compile Include="ICPAR.py" />
-    <Compile Include="ICPAR_.py" />
     <Compile Include="representation.py" />
     <Compile Include="SIP.py" />
     <Compile Include="trainer.py" />
