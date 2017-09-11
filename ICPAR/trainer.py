@@ -1,8 +1,9 @@
-import numpy as  ./np
+import numpy as np
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Flatten
 import keras.backend as K
 import random
+import os
 import sys
 sys.setrecursionlimit(1000000)
 
@@ -57,9 +58,6 @@ def rejection(x, y, tl):
     new_tl.append(tl[idx])
   return new_x, new_y, new_tl
 
-
-
-
 def data_load(train_list, test_list):
   train_x = []; train_y = []; train_tl = []
   for tf in train_list:
@@ -72,6 +70,11 @@ def data_load(train_list, test_list):
     test_x.extend(x); test_y.extend(y); test_tl.extend(tl)
 
   return train_x, train_y, train_tl, test_x, test_y, test_tl
+
+def fold_data_load(i):
+  train_x = []; train_y = []; train_tl = []
+
+
 
 def create_model(ipt_dim):
   model = Sequential()
@@ -129,28 +132,59 @@ def get_pred_perfomance(test_y, pred_y, time_line):
   ca = performance_generator(tp, tn, fp, fn)
   ta = performance_generator(tpt, tnt, fpt, fnt)
 
-  cs = ''
+  cs = str(tp) + ',' + str(tn) + ',' + str(fp) + ',' + str(fn)
   for v in ca:
-    cs += '\t' + str(v)
-  ts = ''
+    cs += ',' + str(v)
+  ts =  str(tpt) + ',' + str(tnt) + ',' + str(fpt) + ',' + str(fnt)
   for v in ta:
-    ts += '\t' + str(v)
+    ts += ',' + str(v)
 
   print('Count:' + cs)
   print('Time:' + ts)
 
-  return cs
+  return cs  + ',' + ts
+
+def read_1_file(file):
+  pid = file.split('.')[0]
+  f = open('int/'+pid+'_1_int_rev.csv')
+  lines = f.readlines()
+  f.close()
+  arr = np.load('npy/'+str(pos)+'/'+file)
+  x = []; y = []; tl = [];
+  for line in lines:
+    sl = line.split(',')
+    sid = int(sl[0])
+    if int(sl[1]) == 1:
+      y.append([1, 0])
+    else:
+      y.append([0, 1])
+    tl.append(float(sl[2]))
+    x.append(arr[sid])
+  return x, y, tl
+
+def read_module(pos):
+  files = os.listdir('npy/' + str(pos))
+  test_x = []; test_y = []; test_tl = [];
+  train_x = []; train_y = []; train_tl = [];
+  for file in files:
+    if 'rep' in file:
+      if 'non' in file:
+        x, y, tl = read_1_file(file)
+        test_x.extend(x); test_y.extend(y); test_tl.extend(tl)
+      else:
+        x, y, tl = read_1_file(file)
+        train_x.extend(x); train_y.extend(y); train_tl.extend(tl)
+  return [train_x, train_y, train_tl], [test_x, test_y, test_tl]
 
 if __name__=='__main__':
-  print('Aug and No')
-  print('Train data loading...')
-  train_x, train_y, train_tl, test_x, test_y, test_tl = data_load(['31', '40', '45'], ['15'])
-  print('Creating model...')
+  pos = 3
+  print(str(pos))
+  train, test = read_module(pos)
   model = create_model(64)
-  print('Training...')
-  model.fit(np.array(train_x), np.array(train_y), validation_data=(np.array(test_x), np.array(test_y)), epochs=10)
-  pred = model.predict(np.array(test_x))
-  sentence = get_pred_perfomance(test_y, pred, test_tl)
-
-
-
+  model.fit(np.array(train[0]), np.array(train[1]), validation_data=(np.array(test[0]), np.array(test[1])), epochs=10)
+  model.save('net/CNN/'+str(pos)+'_CNN.net')
+  pred = model.predict(np.array(test[0]))
+  sentence = get_pred_perfomance(test[1], pred, test[2])
+  pen = open('CNN_result.csv', 'a')
+  pen.write('\n' + str(pos) + ',' + sentence)
+  pen.close()

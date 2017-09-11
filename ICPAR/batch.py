@@ -19,7 +19,7 @@ if __name__ == '__main__':
   s_5, f_5 = ae.load_data(fold5)
   signals = [s_1, s_2, s_3, s_4, s_5]
   filenams = [f_1, f_2, f_3, f_4, f_5]
-  for i in range(3, 5):
+  for i in range(1, 2):
     print(str(i) + ' fold start!')
     s = []; f = []; sa = []; fa =[];
     for j  in range(5):
@@ -36,12 +36,13 @@ if __name__ == '__main__':
 
     bef_cnt = 0
     for k in range(len(f)):
-      filename = f[i].split('_')[0]
-      imgs = ae.signal_to_img(s[i])
+      filename = f[k].split('_')[0]
+      imgs = ae.signal_to_img(s[k])
       total_image.extend(imgs)
-      total_signal.extend(s[i])
+      total_signal.extend(s[k])
       file_len_map[filename] = [bef_cnt, bef_cnt + len(imgs)]
       bef_cnt += len(imgs)
+
     total_rep_imgs = ae.autoencoding_cnn(total_image, total_image, fold=i)
     
     for l, v in file_len_map.items():
@@ -50,8 +51,8 @@ if __name__ == '__main__':
       for m in range(v[0], v[1]):
         npy_ori.append(total_image[m])
         npy_rep.append(total_rep_imgs[m])
-      np.save('npy/'+str(i)+'_'+l+'.abp.ori.npy', npy_ori)
-      np.save('npy/'+str(i)+'_'+l+'abp.rep.npy', npy_rep)
+      np.save('npy/'+str(i)+'/'+l+'.abp.ori.npy', npy_ori)
+      np.save('npy/'+str(i)+'/'+l+'.abp.rep.npy', npy_rep)
       
     total_image = []
     total_signal = []
@@ -59,10 +60,10 @@ if __name__ == '__main__':
 
     bef_cnt = 0
     for k in range(len(fa)):
-      filename = fa[i].split('_')[0]
-      imgs = ae.signal_to_img(sa[i])
+      filename = fa[k].split('_')[0]
+      imgs = ae.signal_to_img(sa[k])
       total_image.extend(imgs)
-      total_signal.extend(sa[i])
+      total_signal.extend(sa[k])
       file_len_map[filename] = [bef_cnt, bef_cnt + len(imgs)]
       bef_cnt += len(imgs)
     total_rep_imgs = ae.autoencding_cnn_using_net(total_image, fold=i)
@@ -73,7 +74,7 @@ if __name__ == '__main__':
       for m in range(v[0], v[1]):
         npy_ori.append(total_image[m])
         npy_rep.append(total_rep_imgs[m])
-      np.save('npy/'+str(i)+'_'+l+'.abp.ori.non.npy', npy_ori)
-      np.save('npy/'+str(i)+'_'+l+'abp.rep.non.npy', npy_rep)
+      np.save('npy/'+str(i)+'/'+l+'.abp.ori.non.npy', npy_ori)
+      np.save('npy/'+str(i)+'/'+l+'.abp.rep.non.npy', npy_rep)
     print(str(i) + ' fold finished!')
 

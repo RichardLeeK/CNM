@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# datafile
+*.csv
+*.npy
+*.png
+*.jpg
+*.net
