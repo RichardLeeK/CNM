@@ -144,8 +144,8 @@ def get_pred_perfomance(test_y, pred_y, time_line):
 
   return cs  + ',' + ts
 
-def read_1_file(file):
-  pid = file.split('.')[0]
+def read_1_file(file, pos):
+  pid = file.split('.')[0].split('/')[-1]
   f = open('int/'+pid+'_1_int_rev.csv')
   lines = f.readlines()
   f.close()
@@ -169,20 +169,20 @@ def read_module(pos):
   for file in files:
     if 'rep' in file:
       if 'non' in file:
-        x, y, tl = read_1_file(file)
+        x, y, tl = read_1_file(file, pos)
         test_x.extend(x); test_y.extend(y); test_tl.extend(tl)
       else:
-        x, y, tl = read_1_file(file)
+        x, y, tl = read_1_file(file, pos)
         train_x.extend(x); train_y.extend(y); train_tl.extend(tl)
   return [train_x, train_y, train_tl], [test_x, test_y, test_tl]
 
 if __name__=='__main__':
-  pos = 3
+  pos = 2
   print(str(pos))
   train, test = read_module(pos)
   model = create_model(64)
-  model.fit(np.array(train[0]), np.array(train[1]), validation_data=(np.array(test[0]), np.array(test[1])), epochs=10)
-  model.save('net/CNN/'+str(pos)+'_CNN.net')
+  model.fit(np.array(train[0]), np.array(train[1]), validation_data=(np.array(test[0]), np.array(test[1])), epochs=50)
+  model.save('net/CNN/'+str(pos)+'_CNN50.net')
   pred = model.predict(np.array(test[0]))
   sentence = get_pred_perfomance(test[1], pred, test[2])
   pen = open('CNN_result.csv', 'a')

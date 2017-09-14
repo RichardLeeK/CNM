@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c5ca3590-1bd7-4dfd-a477-d8f7661f4d03</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>trainer.py</StartupFile>
+    <StartupFile>remover.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
